@@ -3,29 +3,13 @@
 #include <sstream>
 #include <iomanip> // for setprecision()
 #include "furuno\furuno.h"
-
+#include <MOOSApp.h>
 
 using namespace furuno;
 using namespace std;
 
 ofstream OutputFile;
 
-#include MOOSAPP.h
-#include Furuno.h
-class Furuno Node: public MOOSAPP {
-Furuno Node () {};
-private:
-OnStartup()	{ 	my_furuno.connect
-			my_furuno.on_position =
-			&Furuno Node :: PositionCallback;
-		}
-Void PositionCallback(positionOutput best.position, double timestamp){
-	Publish...
-	Publish...
-}
-
-Furuno my_furuno;
-}
 void onBestPositionCallback(PositionOutput best_position, double time_stamp){
 	if (!OutputFile)
 	{
@@ -275,3 +259,28 @@ int main(int argc, char **argv){
 
     return 0;
 }
+class FurunoNode: public CMOOSApp 
+{
+	private:
+	bool OnStartup(int argc, char **argv)	
+		{ 	   
+			if(argc < 3) 
+			{
+				std::cerr << "Usage: novatel_example <serial port address> <baud rate>" << std::endl;
+				return 0;
+			}
+			std::string port(argv[1]);
+			int baudrate=38400;
+			istringstream(argv[2]) >> baudrate;
+			Furuno my_furuno;
+			my_furuno.Connect(port,baudrate);
+			my_furuno.on_position = onBestPositionCallback; 
+			&FurunoNode :: PositionCallback;
+		}
+	void PositionCallback(PositionOutput best_position, double timestamp)
+	{
+	 bool PublishBestPosToDB(PositionOutput best_position, double timestamp);
+	}
+
+Furuno my_furuno;
+};
